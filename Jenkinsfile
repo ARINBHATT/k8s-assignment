@@ -82,7 +82,7 @@ pipeline {
         }
         always {
             // Clean up local Docker images to save disk space
-            bat "docker rmi ${IMAGE_NAME}:${IMAGE_TAG} || exit 0"
+            bat "docker rmi ${IMAGE_NAME}:${IMAGE_TAG} || ver> nul"
         }
     }
 }
