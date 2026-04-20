@@ -19,14 +19,14 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo "Building image: ${IMAGE_NAME}:${IMAGE_TAG}"
-                bat "docker build -f docker/Dockerfile -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                sh "docker build -f docker/Dockerfile -t ${IMAGE_NAME}:${IMAGE_TAG} ."
             }
         }
 
         stage('Test') {
             steps {
                 echo "Running tests..."
-                bat """
+                sh """
                 docker run --rm ${IMAGE_NAME}:${IMAGE_TAG} python -m pytest tests/ -v || echo No tests found, skipping
                 """
             }
@@ -38,13 +38,13 @@ pipeline {
 
                     echo "Deploying ${IMAGE_NAME}:${IMAGE_TAG} to Kubernetes..."
 
-                    bat """
+                    sh """
                     kubectl --kubeconfig=%KUBECONFIG% set image deployment/flask-deployment ^
                     flask-container=${IMAGE_NAME}:${IMAGE_TAG}
                     """
 
-                    bat "kubectl --kubeconfig=%KUBECONFIG% rollout status deployment/flask-deployment"
-                    bat "kubectl --kubeconfig=%KUBECONFIG% get pods"
+                    sh "kubectl --kubeconfig=%KUBECONFIG% rollout status deployment/flask-deployment"
+                    sh "kubectl --kubeconfig=%KUBECONFIG% get pods"
                 }
             }
         }
@@ -60,7 +60,7 @@ pipeline {
         }
 
         always {
-            bat "docker rmi ${env.IMAGE_NAME}:${env.IMAGE_TAG} || exit 0"
+            sh "docker rmi ${env.IMAGE_NAME}:${env.IMAGE_TAG} || exit 0"
         }
     }
 }
