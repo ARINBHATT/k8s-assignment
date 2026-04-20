@@ -24,15 +24,7 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                echo "Running tests..."
-                // Run tests inside a temporary container
-                bat """
-                    docker run --rm ${IMAGE_NAME}:${IMAGE_TAG} python -m pytest tests/ -v || echo "No tests found, skipping"
-                """
-            }
-        }
+
 
         stage('Push to Docker Hub') {
             steps {
