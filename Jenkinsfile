@@ -80,9 +80,5 @@ pipeline {
             echo "Pipeline FAILED. Check logs above."
             // Optional Slack: slackSend color: 'danger', message: "Deploy FAILED: ${IMAGE_TAG}"
         }
-        always {
-            // Clean up local Docker images to save disk space
-            bat "docker rmi ${IMAGE_NAME}:${IMAGE_TAG} || ver> nul"
-        }
     }
 }
